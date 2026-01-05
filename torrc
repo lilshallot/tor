@@ -1,0 +1,44 @@
+# Run in foreground for container logs
+RunAsDaemon 0
+
+# Persisted Tor state (keys, cached consensus, hidden services, etc.)
+DataDirectory ${TOR_DATA_DIR}
+
+# Logging
+Log ${TOR_LOG_LEVEL} stdout
+
+# --- SOCKS proxy ---
+SocksPort ${TOR_SOCKS_BIND_IP}:${TOR_SOCKS_PORT}
+SocksPolicy accept ${TOR_SOCKS_ALLOW}
+SocksPolicy reject *
+
+# (Optional) DNSPort — OFF by default (avoid open DNS proxy).
+# If you enable it, bind to localhost or a trusted LAN only.
+${TOR_DNSPORT_LINE}
+
+# --- ControlPort (keep local by default) ---
+ControlPort ${TOR_CONTROL_BIND_IP}:${TOR_CONTROL_PORT}
+CookieAuthentication 1
+CookieAuthFile ${TOR_COOKIE_FILE}
+CookieAuthFileGroupReadable 0
+
+# Avoid becoming a relay
+ORPort 0
+ExitRelay 0
+PublishServerDescriptor 0
+
+# Reasonable client limits
+ClientOnly 1
+
+# Include additional snippets (mount custom .conf files)
+%include ${TOR_CONF_DIR}/*.conf
+
+# --- Bridges / Pluggable Transports ---
+${TOR_BRIDGES_BLOCK}
+
+# --- Hidden services (optional) ---
+${TOR_HS_BLOCK}
+
+# Hardened defaults (optional — override in torrc.d snippets)
+# SafeSocks 1
+# ClientRejectInternalAddresses 1
