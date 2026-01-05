@@ -19,3 +19,5 @@ Tag the image to latest \
 `docker tag lilshallot/tor:0.0.1 lilshallot/tor:latest`
 
 ## Configuration
+
+# Contributing
