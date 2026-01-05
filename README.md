@@ -1,6 +1,8 @@
 # lilshallot/tor
 A fully capable Tor container for use primarily with docker and docker compose.
 
+[![Docker Image CI](https://github.com/lilshallot/tor/actions/workflows/docker-image.yml/badge.svg)](https://github.com/lilshallot/tor/actions/workflows/docker-image.yml)
+
 ## Features
 
 ## Building the Container
