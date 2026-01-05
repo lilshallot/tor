@@ -1,0 +1,68 @@
+services:
+  tor:
+    image: lilshallot/tor:latest
+    container_name: tor
+    restart: unless-stopped
+
+    # Persist Tor state (recommended). This contains cached consensuses and any HS keys if enabled.
+    volumes:
+      - tor-data:/var/lib/tor
+      # Optional: drop extra config snippets here (advanced)
+      # - /home/<user>/tor/torrc.d:/etc/tor/torrc.d:ro
+
+    # Expose SOCKS to your LAN only if you want other devices to use it.
+    # Safer: bind to localhost and let only other containers use it via Docker network.
+    ports:
+      - "127.0.0.1:9050:9050"
+      # Do NOT publish ControlPort 9051 unless you know exactly why you need it.
+      # - "9051:9051"
+      # DNSPort disabled by default; if enabled and bound to localhost, don’t publish.
+      # - "127.0.0.1:5353:5353/udp"
+
+    environment:
+      TOR_LOG_LEVEL: "notice"
+
+      # SOCKS settings
+      TOR_SOCKS_BIND_IP: "0.0.0.0"
+      TOR_SOCKS_PORT: "9050"
+      TOR_SOCKS_ALLOW: "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+
+      # ControlPort (keep local)
+      TOR_CONTROL_BIND_IP: "127.0.0.1"
+      TOR_CONTROL_PORT: "9051"
+
+      # Wait for Tor to be usable before marking container “up”
+      TOR_WAIT_BOOTSTRAP: "1"
+      TOR_BOOTSTRAP_TIMEOUT: "180"
+
+      # ---- Bridges (optional) ----
+      # TOR_USE_BRIDGES: "1"
+      # TOR_BRIDGE_TRANSPORT: "obfs4"
+      # TOR_PT_EXEC: "/usr/bin/obfs4proxy"
+      # TOR_BRIDGES: |
+      #   Bridge obfs4 <ip:port> <fingerprint> cert=<...> iat-mode=0
+      #   Bridge obfs4 <ip:port> <fingerprint> cert=<...> iat-mode=0
+
+      # ---- Hidden Services (optional) ----
+      # TOR_ENABLE_HS: "1"
+      # TOR_HS_CONF: |
+      #   HiddenServiceDir /var/lib/tor/hs/myservice
+      #   HiddenServicePort 80 127.0.0.1:8080
+
+    healthcheck:
+      test: ["CMD-SHELL", "/usr/local/bin/healthcheck.sh"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+    # Put Tor and services on the same network
+    networks:
+      - tor-net
+
+volumes:
+  tor-data:
+
+networks:
+  tor-net:
+    driver: bridge
