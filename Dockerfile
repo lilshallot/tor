@@ -25,7 +25,7 @@ RUN mkdir -p /etc/tor/torrc.d /var/lib/tor /var/log/tor \
   && chown -R debian-tor:debian-tor /var/lib/tor /var/log/tor \
   && chmod 700 /var/lib/tor
 
-COPY torrc /etc/tor/torrc
+COPY torrc /etc/tor/torrc.template
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY healthcheck.sh /usr/local/bin/healthcheck.sh
 
