@@ -25,7 +25,11 @@ services:
       # SOCKS settings
       TOR_SOCKS_BIND_IP: "0.0.0.0"
       TOR_SOCKS_PORT: "9050"
-      TOR_SOCKS_ALLOW: "127.0.0.1,10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+      TOR_SOCKS_ALLOW: |
+        SocksPolicy accept 127.0.0.1
+        SocksPolicy accept 10.0.0.0/8
+        SocksPolicy accept 172.16.0.0/12
+        SocksPolicy accept 192.168.0.0/16
 
       # ControlPort (keep local)
       TOR_CONTROL_BIND_IP: "127.0.0.1"
