@@ -97,7 +97,11 @@ export TOR_DNSPORT_LINE TOR_BRIDGES_BLOCK TOR_HS_BLOCK
 # =========================
 # Render torrc from template
 # =========================
-envsubst < /etc/tor/torrc > /etc/tor/torrc
+if [ ! -s /etc/tor/torrc.template ]; then
+  echo "ERROR: /etc/tor/torrc.template missing/empty"
+  exit 1
+fi
+envsubst < /etc/tor/torrc.template > /etc/tor/torrc
 
 # Safety warning if user exposes ControlPort
 if [[ "${TOR_CONTROL_BIND_IP}" != "127.0.0.1" && "${TOR_CONTROL_BIND_IP}" != "localhost" ]]; then
