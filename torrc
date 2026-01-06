@@ -9,7 +9,7 @@ Log ${TOR_LOG_LEVEL} stdout
 
 # --- SOCKS proxy ---
 SocksPort ${TOR_SOCKS_BIND_IP}:${TOR_SOCKS_PORT}
-SocksPolicy accept ${TOR_SOCKS_ALLOW}
+${TOR_SOCKS_ALLOW}
 SocksPolicy reject *
 
 # (Optional) DNSPort — OFF by default (avoid open DNS proxy).
